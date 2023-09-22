@@ -29,15 +29,16 @@ VOID Image(IMG img, VOID* v) {
 }
 
 
-// This function increments the times memoryAddr has been read 
-VOID incrementMap(ADDRINT baseAddress, ADDRINT readAddress, ADDRINT insAddress) { 
-    if (insAddress >= mainModuleBase && insAddress <= mainModuleHigh) {  // Ensure the instruction is from the main module
+// This function increments the maps of which instruction addresses call where 
+VOID incrementMaps(ADDRINT baseAddress, ADDRINT readAddress, ADDRINT insAddress) { 
+    // Ensure the instruction is from the main module
+    if (insAddress >= mainModuleBase && insAddress <= mainModuleHigh) {  
         readAddressMap[readAddress - mainModuleBase]++; 
         instrMap[insAddress - mainModuleBase]++;
     }
 }
 
-// If instruction is memory read we want to add it to the map
+// If instruction is memory read we want to add it to the maps
 VOID Instruction(INS ins, VOID* v) {
     if (INS_IsMemoryRead(ins)) {
         INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)incrementMap, 
